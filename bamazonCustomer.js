@@ -1,6 +1,11 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+var productStock;
+var chosenProduct;
+var chosenQuantity;
+var chosenProductPrice;
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
   host: "localhost",
@@ -23,6 +28,7 @@ connection.connect(function(err) {
 
 // Running this Node application will first display all of the items available for sale.
 //Include the ids, names, and prices of products for sale. 
+
 function start() {
     connection.query("SELECT item_id, product_name, price, stock_quantity FROM products", function(err, results) {
         if (err) throw err;
@@ -40,37 +46,38 @@ function start() {
                 message: "How many units of product would you like to buy?"
             }
         ])
-        // Once the customer has placed the order, your application should check if 
-        // your store has enough of the product to meet the customer's request.
+        // Once the customer has placed the order, check if store has enough of the product to meet the customer's request.
         .then(function(answer) {
-            console.log(answer.selectProduct); 
-            console.log(answer.selectQuantity);
-            console.log(results[answer.selectProduct - 1].stock_quantity);
+            productStock = results[answer.selectProduct - 1].stock_quantity;
+            chosenProduct = answer.selectProduct;
+            chosenQuantity = answer.selectQuantity;
+            chosenProductPrice = results[answer.selectProduct = 1].price;
+            // Enough product - fulfill the customer's order.
+            if (answer.selectQuantity <= results[answer.selectProduct - 1].stock_quantity) {
+                // Update the SQL database to reflect the remaining quantity.
+                connection.query(
+                    "UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: productStock - chosenQuantity
+                        },
+                        {
+                            item_id: chosenProduct
+                        }
+                    ],
+                    function(err) {
+                        if (err) throw err;
+                        console.log("Success! Your purchase cost totals " + chosenProductPrice * chosenQuantity);
+                    }    
+                );
+            }
+            //if not, logs Insufficient quantity and order does not go through
+            else {
+                console.log("Insufficient quantity!")
+                start();
+            }
         });
     });
 }
 
-// The app should then prompt users with two messages.
-// The first should ask them the ID of the product they would like to buy.
-// The second message should ask how many units of the product they would like to buy.
 
-
-
-
-
-
-
-
-
-
-
-// If not, the app should log a phrase like Insufficient quantity!, 
-// and then prevent the order from going through.
-
-
-
-// However, if your store does have enough of the product, 
-// you should fulfill the customer's order.
-
-// This means updating the SQL database to reflect the remaining quantity.
-// Once the update goes through, show the customer the total cost of their purchase.
