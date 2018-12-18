@@ -51,9 +51,9 @@ function start() {
             productStock = results[answer.selectProduct - 1].stock_quantity;
             chosenProduct = answer.selectProduct;
             chosenQuantity = answer.selectQuantity;
-            chosenProductPrice = results[answer.selectProduct = 1].price;
+            chosenProductPrice = results[answer.selectProduct - 1].price;
             // Enough product - fulfill the customer's order.
-            if (answer.selectQuantity <= results[answer.selectProduct - 1].stock_quantity) {
+            if (answer.selectQuantity <= productStock) {
                 // Update the SQL database to reflect the remaining quantity.
                 connection.query(
                     "UPDATE products SET ? WHERE ?",
@@ -67,7 +67,7 @@ function start() {
                     ],
                     function(err) {
                         if (err) throw err;
-                        console.log("Success! Your purchase cost totals " + chosenProductPrice * chosenQuantity);
+                        console.log("Success! Your purchase cost totals " + (chosenProductPrice * chosenQuantity));
                     }    
                 );
             }
