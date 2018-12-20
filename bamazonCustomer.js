@@ -32,7 +32,7 @@ connection.connect(function(err) {
 function start() {
     connection.query("SELECT item_id, product_name, price, stock_quantity FROM products", function(err, results) {
         if (err) throw err;
-        console.log(results);
+        console.log(JSON.parse(JSON.stringify(results)));
         inquirer
         .prompt([
             {
