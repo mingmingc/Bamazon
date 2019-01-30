@@ -68,6 +68,7 @@ function start() {
                     function(err) {
                         if (err) throw err;
                         console.log("Success! Your purchase cost totals " + (chosenProductPrice * chosenQuantity));
+                        start();
                     }    
                 );
             }
