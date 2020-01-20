@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+require('dotenv').config()
 
 var productStock;
 var chosenProduct;
@@ -8,16 +9,11 @@ var chosenProductPrice;
 
 // create the connection information for the sql database
 var connection = mysql.createConnection({
-  host: "localhost",
-
-  port: 3306,
-
-  // Your username
-  user: "root",
-
-  // Your password
-  password: "Duckies4$",
-  database: "bamazon"
+    host: process.env.MYSQL_HOST,
+    port: process.env.MYSQL_PORT,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PW,
+    database: process.env.MYSQL_DB,
 });
 
 //connect to mySQL DB
