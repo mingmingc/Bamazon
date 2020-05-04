@@ -1,5 +1,5 @@
 # Bamazon
-## Node.js &amp; mySQL storefront - customer view
+## Node.js &amp; SQL storefront - customer view
 
 ## Instructions
 1. In terminal, run `node bamazonCustomer.js` from directory.
